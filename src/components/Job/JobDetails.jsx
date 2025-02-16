@@ -16,7 +16,7 @@ const JobDetails = () => {
     }
 
     axios
-      .get(`http://localhost:5000/api/v1/job/${id}`, { withCredentials: true })
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/job/${id}`, { withCredentials: true })
       .then((res) => {
         setJob(res.data.job);
       })
