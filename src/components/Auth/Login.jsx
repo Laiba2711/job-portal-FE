@@ -16,14 +16,17 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!role) {
+      toast.error("Please select a role.");
+      return;
+    }
+
     try {
       const { data } = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/v1/user/login`,
         { email, password, role },
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
@@ -33,74 +36,67 @@ const Login = () => {
       setRole("");
       setIsAuthorized(true);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong.");
     }
   };
 
-  if(isAuthorized){
-    return <Navigate to={'/'}/>
+  if (isAuthorized) {
+    return <Navigate to="/" />;
   }
 
   return (
-    <>
-      <section className="authPage">
-      <div className="banner">
-         
+    <section className="authPage">
+      <div className="banner"></div>
+      <div className="container">
+        <div className="header">
+          <img src="/logo.png" alt="Login Logo" />
+          <h3>Login to Your Account</h3>
         </div>
-        <div className="container">
-          <div className="header">
-          <img src="/logo.png" alt="login" />
-            <h3>𝐋𝐎𝐆𝐈𝐍 𝐓𝐎 𝐘𝐎𝐔𝐑 𝐀𝐂𝐂𝐎𝐔𝐍𝐓</h3>
+        <form onSubmit={handleLogin}>
+          <div className="inputTag">
+            <label>Login As</label>
+            <div>
+              <select value={role} onChange={(e) => setRole(e.target.value)} required>
+                <option value="">Select Role</option>
+                <option value="Job Seeker">Job Seeker</option>
+                <option value="Employer">Employer</option>
+              </select>
+              <FaRegUser />
+            </div>
           </div>
-          <form>
-            <div className="inputTag">
-              <label>ʟᴏɢɪɴ ᴀꜱ</label>
-              <div>
-                <select value={role} onChange={(e) => setRole(e.target.value)}>
-                  <option value="">ꜱᴇʟᴇᴄᴛ ʀᴏʟᴇ</option>
-                  
-                  <option value="Job Seeker">ᴊᴏʙ ꜱᴇᴇᴋᴇʀ</option>
-                  <option value="Employer">ᴇᴍᴘʟᴏʏᴇʀ</option>
-                </select>
-                <FaRegUser />
-              </div>
+          <div className="inputTag">
+            <label>Email Address</label>
+            <div>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <MdOutlineMailOutline />
             </div>
-            <div className="inputTag">
-              <label>ᴇᴍᴀɪʟ ᴀᴅᴅʀᴇꜱꜱ</label>
-              <div>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <MdOutlineMailOutline />
-              </div>
-            </div>
-            <div className="inputTag">
-              <label>Password</label>
-              <div>
-                <input
-                  type="password"
-                  placeholder="Enter your Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <RiLock2Fill />
-              </div>
-            </div>
-            <div className="buttonContainer">
-            <button type="submit" className="loginButton" onClick={handleLogin}>
-            ʟᴏɢɪɴ
-            </button>
-           
-              <Link to={"/register"} className="registerLink">ʀᴇɢɪꜱᴛᴇʀ ɴᴏᴡ</Link>
-           
           </div>
-          </form>
-        </div>
-      </section>
-    </>
+          <div className="inputTag">
+            <label>Password</label>
+            <div>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <RiLock2Fill />
+            </div>
+          </div>
+          <div className="buttonContainer">
+            <button type="submit" className="loginButton">Login</button>
+            <Link to="/register" className="registerLink">Register Now</Link>
+          </div>
+        </form>
+      </div>
+    </section>
   );
 };
 
